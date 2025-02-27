@@ -45,6 +45,8 @@ public class Calculator {
                         }
                     }
                     System.out.println("사용할 연산자를 입력해주세요!");
+                    // TODO operator입력 오류 버퍼 문제? #########################
+                    sc.next();
                     // TODO swtich문 작성 #########################
                     switch (operator = sc.nextLine()) {
                         case "+": // 더하기
@@ -103,9 +105,8 @@ public class Calculator {
     }
 
     public static void clear() {
-        for(int i = 0; i < 17; i++)
-        System.out.println();
+        for (int i = 0; i < 17; i++) {
+            System.out.println();
+        }
     }
-
-
 }
