@@ -66,6 +66,7 @@ public class Calculator {
                             flag = "false";
                     }
                     // TODO 입력 오류(유효하지 않는 값) 수정 #########################
+                    // TODO 입력 오류(유효하지 않는 값) 수정 #########################
 
                     // 연산자 입력
                     String calcOperator = sc.next();
