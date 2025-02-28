@@ -25,8 +25,10 @@ public class Calculator {
             System.out.println("==============================================");
             System.out.println("1. 계산하기");
             System.out.println("2. 계산 기록보기");
-            System.out.println("3. 종료: \"exit\", \"q\",\"Q\" 입력하기");
-
+            // TODO 이전 계산기록 가져오기
+            System.out.println("3. 계산 기록 가져오기");
+            System.out.println("4. 종료: \"exit\", \"q\",\"Q\" 입력하기");
+            result = 0;
             // token값을 이용한 switch문
             switch (token = sc.next()){
                 case "1":       // 계산
@@ -81,6 +83,11 @@ public class Calculator {
                                 switchFlag = false;
                                 break;
                             case "/": // 나누기(몫)
+                                if (calcParams[1] == 0) {
+                                    System.out.println("0으로 나눌 수 없습니다");
+                                    switchFlag = false;
+                                    break;
+                                }
                                 result = calcParams[0] / calcParams[1];
                                 switchFlag = false;
                                 break;
@@ -100,8 +107,8 @@ public class Calculator {
                     System.out.println("입력된 연산자: "+operator);
 
                     System.out.println("결과 :  " + result);
-                    interimCalcResult[cnt++] = String.valueOf(calcParams[0])+" "+operator +
-                            " "+String.valueOf(calcParams[1])+" =  "+String.valueOf(result);
+                    interimCalcResult[cnt++] = String.valueOf(calcParams[0]) + " " + operator +
+                            " " + String.valueOf(calcParams[1]) + " =  " + String.valueOf(result);
                     break;
 
                 case "2":       // 계산 기록
@@ -134,4 +141,5 @@ public class Calculator {
         System.out.println("현재 버퍼 크기 : " + currentBuffer.length());
         return operator;
     }
+    // TODO n번째 interimCalcResult 파라미터로 가져와 '='로 StringTokenizer
 }
