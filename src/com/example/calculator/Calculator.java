@@ -62,7 +62,7 @@ public class Calculator {
                         }
 
                     }
-                    System.out.println("사용할 연산자를 입력해주세요!");
+                    System.out.println("+, -, *, /, % 중 사용할 연산자를 입력해주세요!");
                     // long -> String 버퍼 비우기
                     sc.nextLine();
 
