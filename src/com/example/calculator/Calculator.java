@@ -84,7 +84,7 @@ public class Calculator {
                                 break;
                             case "/": // 나누기(몫)
                                 if (calcParams[1] == 0) {
-                                    System.out.println("0으로 나눌 수 없습니다");
+                                    System.out.println("❌ 0으로 나눌 수 없습니다!");
                                     switchFlag = false;
                                     break;
                                 }
