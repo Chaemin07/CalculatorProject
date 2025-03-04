@@ -1,8 +1,9 @@
 package com.example.calculator;
 
+import java.util.List;
 import java.util.Scanner;
 
-public class Main {
+public class App {
     public static void main(String[] args) {
         Calculator calculator = new Calculator();
         Scanner sc = new Scanner(System.in);
@@ -64,13 +65,26 @@ public class Main {
 
                 case "2":       // 계산 기록
                     System.out.println("2. 계산 기록보기를 선택하셨습니다!");
-                    String[] interimCalcResult = calculator.getInterimCalcResult();
-                    for (int i = 0; i < calculator.getCount(); i++) {
-                        System.out.println((i + 1) + "번째 결과 : " + interimCalcResult[i]);
+                    List<String> calcLogs = calculator.getCalcLogs();
+                    for (int i = 0; i < calcLogs.size(); i++) {
+                        String calcLog = calcLogs.get(i);
+                        System.out.println((i + 1) + "번째 결과 : " + calcLog);
                     }
                     break;
                 case "3":
-                case "4":
+                    System.out.println("3. 계산 중간 결과값 가져오기");
+                    long interimCalcResult =0;
+                  String interimCalcString = calculator.interimCalc();
+                    if (interimCalcString.contains("❌")) {
+                        System.out.println("값을 가져올 수 없습니다!!");
+                    }else{
+                        interimCalcResult = Long.parseLong(interimCalcString);
+                        System.out.println("가져온 결과값 : " + interimCalcResult);
+                        // 초기화
+                        calculator.setInterimCalc(interimCalcResult);
+                    }
+                    break;
+                case "4":       // 종료
                 case "exit":    // 종료
                 case "q":       // 종료
                 case "Q":       // 종료

@@ -2,44 +2,77 @@ package com.example.calculator;
 
 
 import java.io.BufferedReader;
-import java.util.Scanner;
+import java.util.*;
 
 public class Calculator {
-    private int count;
-
-    public String[] getInterimCalcResult() {
-        return interimCalcResult;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    private String[] interimCalcResult; // 중간 계산 결과 → static이여야 할까?
+    private int size;
+    // 초기화
+    private long interimCalc = -1;
+    //    private String[] interimCalcResult; // 중간 계산 결과 → static이여야 할까?
     private long[] calcParams; // main에서 생성후 초기화
+    // final로 참조값 수정 x
+    private final Deque<String> calcLogs = new ArrayDeque<>();
 
-
+    // 기본 10
     Calculator() {
+        // 배열 초기화
         calcParams = new long[2];
         // 사이즈
-        interimCalcResult = new String[10];
+        this.size = 10;
     }
+    Calculator(int size) {
+        this();
+        this.size = size;
+    }
+
 
 
     public long[] getCalcParams() {
         return calcParams;
     }
 
+    // 계산 결과 로그 리턴
+    public List<String> getCalcLogs() {
+        // 수정 못하도록 복사본 리턴
+        return Collections.unmodifiableList(new ArrayList<>(calcLogs));
+    }
+
+    public void addLog(String interimCalcResult) {
+        calcLogs.addLast(interimCalcResult);
+
+        // 로그 최대 개수 제한
+        if (calcLogs.size() > this.size) {
+            calcLogs.removeFirst();
+        }
+    }
+    // 중간 계산값 가져오기
+    String interimCalc() {
+        String result = "";
+        int idx = 0;
+        List<String> interimCalcResult = getCalcLogs();
+        Scanner sc = new Scanner(System.in);
+        for (int i = 0; i < interimCalcResult.size(); i++) {
+            System.out.println((i + 1) + "번째 결과 : " + interimCalcResult.get(i));
+        }
+        System.out.println("가져올 결과의 인덱스 번호를 선택해 주세요!");
+        idx = sc.nextInt();
+        // 0부터 시작
+        result = interimCalcResult.get(idx-1);
+        System.out.println("선택한 계산식은 "+result+" 입니다.");
+        StringTokenizer st = new StringTokenizer(result, "=");
+        // TODO 테스트 #############################################
+        System.out.println("첫 번째 토큰은 버립니다.\n"+st.nextToken());
+
+        // 연산 결과값(공백 제거)만 리턴
+        return st.nextToken().trim();
+    }
+
+    // 연산자 입력
     public String inputOperator() {
         Scanner sc = new Scanner(System.in);
         String operator = "";
         operator = sc.next(); // 엔터까지 전부 처리?
         System.out.println("현재 입력된 operator는 " + operator);
-        // 삭제 예정 :현재 버퍼에는?
-        String currentBuffer = sc.nextLine();
-        System.out.println("현재 버퍼 내용 : " + currentBuffer);
-        System.out.println("현재 버퍼 크기 : " + currentBuffer.length());
-
         return operator;
     }
 
@@ -48,14 +81,21 @@ public class Calculator {
         System.out.println("==============================================");
         System.out.println("1. 계산하기");
         System.out.println("2. 계산 기록보기");
-        System.out.println("3. 계산 기록 가져오기");
+        System.out.println("3. 계산 중간 결과값 가져오기");
         System.out.println("4. 종료: \"exit\", \"q\",\"Q\" 입력하기");
     }
+    // 계산할 매개변수 입력
     void setCalcParams() {
         Scanner sc = new Scanner(System.in);
         long calcParam = 0;
         for (int i = 0; i < 2; i++) {
             calcParam = 0;
+            // TODO 중간 계산 결과값을 가져왔다면 어떻게 입력으로 가져올래?
+            if (interimCalc != -1) {
+                System.out.println("중간 결과값을 가져왔습니다!");
+                calcParams[i ] = interimCalc;
+            }
+
             System.out.println("계산할 " + (i + 1) + "번째 양의 정수를 입력해주세요");
             // TODO 추후 String으로 입력받아 long,double로 수정
             // 정수인지 판별
@@ -85,18 +125,37 @@ public class Calculator {
         }
         this.calcParams = calcParams;
     }
+
+    public long getInterimCalc() {
+        return interimCalc;
+    }
+
+    public void setInterimCalc(long interimCalc) {
+        this.interimCalc = interimCalc;
+    }
+
     // 입력값, 연산자, 계산 결과 확인
     void printResult(String operator, long result){
+        String interimCalcResult="";
         // 연산자 입력
         for (int i = 0; i < 2; i++) {
             System.out.println((i+1)+"번째 입력된 값: "+calcParams[i]);
         }
         System.out.println("입력된 연산자: "+operator);
 
-        System.out.println("결과 :  " + result);
+
         // 계산 결과 저장
-        interimCalcResult[count++] = String.valueOf(calcParams[0]) + " " + operator +
-                " " + String.valueOf(calcParams[1]) + " =  " + String.valueOf(result);
+        if (calcParams[1] == 0 && operator.equals("/")) {
+            System.out.println("결과 :  " + "❌ 0으로 나눌 수 없습니다!");
+            interimCalcResult = String.valueOf(calcParams[0]) + " " + operator +
+                    " " + String.valueOf(calcParams[1]) + " =  "+"❌ 0으로 나눌 수 없습니다!";
+        }else {
+            System.out.println("결과 :  " + result);
+            interimCalcResult = String.valueOf(calcParams[0]) + " " + operator +
+                    " " + String.valueOf(calcParams[1]) + " =  " + String.valueOf(result);
+        }
+        // 계산 결과 로그 추가
+        addLog(interimCalcResult);
     }
     // 더하기
     long add() {
@@ -113,7 +172,6 @@ public class Calculator {
     // 나누기(몫)
     long divide() {
         if (calcParams[1] == 0) {
-            System.out.println("❌ 0으로 나눌 수 없습니다!");
             return 0;
         }
         return calcParams[0]/calcParams[1];
