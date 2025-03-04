@@ -28,7 +28,7 @@ public class App {
                     // switchFlag 초기화
                     switchFlag = true;
                     while (switchFlag) {
-                        System.out.println("+, -, *, /, % 중 사용할 연산자를 입력해주세요.");
+                        System.out.println("+, -, *, /, %, ^ 중 사용할 연산자를 입력해주세요.");
                         switch (operator = calculator.inputOperator()) {  // 연산자 입력
                             case "+": // 더하기
                                 result = calculator.add();
