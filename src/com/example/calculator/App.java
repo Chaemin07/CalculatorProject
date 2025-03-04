@@ -13,7 +13,6 @@ public class App {
         String operator = "";
         boolean switchFlag = true;
         String token = "";
-
         while (!(token.equals("4") || token.equals("q") || token.equals("Q") || token.equals("exit"))) {
             calculator.menu();
             // 계산결과 초기화
@@ -29,7 +28,7 @@ public class App {
                     // switchFlag 초기화
                     switchFlag = true;
                     while (switchFlag) {
-                        System.out.println("+, -, *, /, % 중 사용할 연산자를 입력해주세요!");
+                        System.out.println("+, -, *, /, % 중 사용할 연산자를 입력해주세요.");
                         switch (operator = calculator.inputOperator()) {  // 연산자 입력
                             case "+": // 더하기
                                 result = calculator.add();
@@ -53,10 +52,11 @@ public class App {
                                 break;
                             case "^":
                                 // TODO 제곱
+                                result = calculator.power();
                                 switchFlag = false;
                                 break;
                             default:
-                                System.out.println("다시 입력해주세요.");
+                                System.out.println("다시 입력해주세요!");
                         }
                     }
                     // 계산 결과 확인
@@ -68,19 +68,19 @@ public class App {
                     List<String> calcLogs = calculator.getCalcLogs();
                     for (int i = 0; i < calcLogs.size(); i++) {
                         String calcLog = calcLogs.get(i);
-                        System.out.println((i + 1) + "번째 결과 : " + calcLog);
+                        System.out.println((i + 1) + "번째 결과 : \"" + calcLog+ "\" 입니다.");
                     }
                     break;
                 case "3":
-                    System.out.println("3. 계산 중간 결과값 가져오기");
-                    long interimCalcResult =0;
-                  String interimCalcString = calculator.interimCalc();
+                    System.out.println("3. 계산 중간 결과값 가져오기를 선택하셨습니다!");
+                    long interimCalcResult = 0;
+                    String interimCalcString = calculator.interimCalc();
                     if (interimCalcString.contains("❌")) {
                         System.out.println("값을 가져올 수 없습니다!!");
-                    }else{
+                    } else {
                         interimCalcResult = Long.parseLong(interimCalcString);
                         System.out.println("가져온 결과값 : " + interimCalcResult);
-                        // 초기화
+                        // 중간값 유효한 값만
                         calculator.setInterimCalc(interimCalcResult);
                     }
                     break;

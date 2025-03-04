@@ -1,14 +1,13 @@
 package com.example.calculator;
 
-
-import java.io.BufferedReader;
 import java.util.*;
 
 public class Calculator {
     private int size;
-    // 초기화
-    private long interimCalc = -1;
-    //    private String[] interimCalcResult; // 중간 계산 결과 → static이여야 할까?
+    // 중간 계산값
+    private long interimCalc;
+    private boolean interimFlag;
+
     private long[] calcParams; // main에서 생성후 초기화
     // final로 참조값 수정 x
     private final Deque<String> calcLogs = new ArrayDeque<>();
@@ -24,7 +23,6 @@ public class Calculator {
         this();
         this.size = size;
     }
-
 
 
     public long[] getCalcParams() {
@@ -47,22 +45,38 @@ public class Calculator {
     }
     // 중간 계산값 가져오기
     String interimCalc() {
+
+        List<String> interimCalcResult = getCalcLogs();
         String result = "";
         int idx = 0;
-        List<String> interimCalcResult = getCalcLogs();
+        int size = interimCalcResult.size();
+
         Scanner sc = new Scanner(System.in);
-        for (int i = 0; i < interimCalcResult.size(); i++) {
+        for (int i = 0; i < size; i++) {
             System.out.println((i + 1) + "번째 결과 : " + interimCalcResult.get(i));
         }
-        System.out.println("가져올 결과의 인덱스 번호를 선택해 주세요!");
-        idx = sc.nextInt();
-        // 0부터 시작
-        result = interimCalcResult.get(idx-1);
-        System.out.println("선택한 계산식은 "+result+" 입니다.");
-        StringTokenizer st = new StringTokenizer(result, "=");
-        // TODO 테스트 #############################################
-        System.out.println("첫 번째 토큰은 버립니다.\n"+st.nextToken());
+        while(true){
+            // 인덱스는 0부터 시작
+            System.out.println("가져올 수식의 인덱스 번호를 선택해 주세요.");
+            try {
+                idx = sc.nextInt();
+                if (idx <= 0) {
+                    System.out.println("1 ~ " + size + "범위의 정수를 입력해 주세요!");
+                    continue;
+                }
+                break;
 
+            } catch (Exception e) {
+                System.out.println("범위 안의 인덱스를 입력해 주세요!");
+                sc.next();
+            }
+        }
+
+        result = interimCalcResult.get(idx-1);
+        System.out.println("선택한 계산식은 \""+result+"\" 입니다.");
+        StringTokenizer st = new StringTokenizer(result, "=");
+
+        st.nextToken();
         // 연산 결과값(공백 제거)만 리턴
         return st.nextToken().trim();
     }
@@ -72,17 +86,17 @@ public class Calculator {
         Scanner sc = new Scanner(System.in);
         String operator = "";
         operator = sc.next(); // 엔터까지 전부 처리?
-        System.out.println("현재 입력된 operator는 " + operator);
+        System.out.println("현재 입력된 operator는 " + operator+" 입니다.");
         return operator;
     }
 
     // 실행 메뉴
     void menu() {
-        System.out.println("==============================================");
-        System.out.println("1. 계산하기");
-        System.out.println("2. 계산 기록보기");
-        System.out.println("3. 계산 중간 결과값 가져오기");
-        System.out.println("4. 종료: \"exit\", \"q\",\"Q\" 입력하기");
+        System.out.println("🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰🟰");
+        System.out.println("1\uFE0F⃣. 계산하기");
+        System.out.println("2\uFE0F⃣. 계산 기록보기");
+        System.out.println("3\uFE0F⃣. 계산 중간 결과값 가져오기");
+        System.out.println("4\uFE0F⃣. 종료: \"exit\", \"q\",\"Q\" 입력하기");
     }
     // 계산할 매개변수 입력
     void setCalcParams() {
@@ -91,12 +105,14 @@ public class Calculator {
         for (int i = 0; i < 2; i++) {
             calcParam = 0;
             // TODO 중간 계산 결과값을 가져왔다면 어떻게 입력으로 가져올래?
-            if (interimCalc != -1) {
-                System.out.println("중간 결과값을 가져왔습니다!");
-                calcParams[i ] = interimCalc;
+            if (interimFlag&& (i==0)) {
+                System.out.println("중간 결과값을 가져왔습니다.");
+                calcParams[i] = interimCalc;
+                interimFlag = false;
+                continue;
             }
 
-            System.out.println("계산할 " + (i + 1) + "번째 양의 정수를 입력해주세요");
+            System.out.println("계산할 " + (i + 1) + "번째 양의 정수를 입력해주세요.");
             // TODO 추후 String으로 입력받아 long,double로 수정
             // 정수인지 판별
             if (!sc.hasNextLong()) {
@@ -104,13 +120,13 @@ public class Calculator {
                 if (i < -1) {
                     i = 0;
                 }
-                System.out.println("잘못된 값이 입력되었습니다!\n다시 입력해주세요!");
+                System.out.println("잘못된 값이 입력되었습니다!\n다시 입력해주세요.");
                 // long -> String 버퍼 비우기
                 sc.nextLine(); // 오류 메세지 2번 문제 체크중
             } else {
                 // 양수인지 판별
                 calcParam = sc.nextLong();
-                System.out.println("현재 입력된 값은 " + calcParam);
+                System.out.println("현재 입력된 값은 " + calcParam + " 입니다.");
                 if (calcParam >= 0) {
                     calcParams[i] = calcParam;
                 } else {
@@ -141,7 +157,7 @@ public class Calculator {
         for (int i = 0; i < 2; i++) {
             System.out.println((i+1)+"번째 입력된 값: "+calcParams[i]);
         }
-        System.out.println("입력된 연산자: "+operator);
+        System.out.println("입력된 연산자: "+operator+ " 입니다.");
 
 
         // 계산 결과 저장
@@ -181,10 +197,10 @@ public class Calculator {
         return calcParams[0]%calcParams[1];
     }
     // 제곱
-    long power(long a, long b) {
+    long power() {
         long result = 1;
-        for (long i = 1; i <= b; i++) {
-            result *= a;
+        for (long i = 0; i < calcParams[1]; i++) {
+            result *= calcParams[0];
         }
         return result;
     }
